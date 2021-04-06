@@ -3,7 +3,6 @@ const app = express();
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const path = require("path");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -34,12 +33,12 @@ app.get("/api/hello", (req, res) => {
   res.send({ message: "Hello!!!" });
 });
 
-app.post("/api/message", (req, res, next) => {
+app.post("/api/message", (req, res) => {
   const email = req.body.email;
   const message = req.body.message;
   const content = `email: ${email} \nmessage: ${message}`;
   const mail = {
-    from: process.env.REACT_APP_MAIL_ACCOUNT,
+    from: process.env.MAIL_ACCOUNT,
     to: "tuanthanh2067@gmail.com",
     subject: `Message from ${email}`,
     text: content,
@@ -53,12 +52,5 @@ app.post("/api/message", (req, res, next) => {
     }
   });
 });
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client/build")));
-  app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
 
 app.listen(PORT, () => console.log(`server is running on ${PORT}`));
